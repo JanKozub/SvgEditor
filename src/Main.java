@@ -2,7 +2,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -69,6 +70,7 @@ public class Main {
         Map<String, String> idMap = new HashMap<>();
         try {
             FileReader fileReader = new FileReader(new File("src/template.html"));
+            FileWriter classesReader = new FileWriter(new File("src/classes.json"));
             FileWriter fileWriter = new FileWriter(new File("src/temp.txt"));
             int i;
             char c;
@@ -85,7 +87,12 @@ public class Main {
 
                 if (c == '\n') {
                     if (stringBuilder.toString().contains("text")) {
-                        getClass(stringBuilder, idMap);
+                        String classroom = getClass(stringBuilder, idMap);
+                        classesReader.write("{\n" +
+                                "      \"name\": \"" + classroom + "\",\n" +
+                                "      \"building\": \"workshop\",\n" +
+                                "      \"level\": \"1\"\n" +
+                                "    },");
                     }
                     fileWriter.write(stringBuilder.toString() + "\n");
                     System.out.println(stringBuilder.toString());
@@ -93,6 +100,7 @@ public class Main {
                 } else
                     stringBuilder.append(c);
             }
+            classesReader.close();
             fileWriter.close();
             fileReader.close();
         } catch (IOException exception) {
@@ -101,7 +109,7 @@ public class Main {
         return idMap;
     }
 
-    private static void getClass(StringBuilder stringBuilder, Map<String, String> idMap) {
+    private static String getClass(StringBuilder stringBuilder, Map<String, String> idMap) {
         int idx = stringBuilder.indexOf(">") + 1;
         StringBuilder n = new StringBuilder();
         while (stringBuilder.charAt(idx) != '<') {
@@ -111,6 +119,7 @@ public class Main {
         String id = getId(stringBuilder, false);
 
         idMap.put(id, n.toString());
+        return n.toString();
     }
 
     private static String getId(StringBuilder stringBuilder, boolean isRect) {

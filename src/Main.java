@@ -33,13 +33,19 @@ public class Main {
                         if (!isRect) val = 1;
 
                         String tag = idMap.get(id);
-                        if (tag == null) tag = "null";
+                        String clickTag;
+                        if (idMap.get(id) == null) tag = "null";
+                        else
+                            tag = "classroom_" + tag;
+                        clickTag = tag;
+                        if (!isRect) clickTag = tag + "_text";
+
 
                         stringBuilder.replace(idx, idx + id.length() + val, tag);
 
                         int offset = stringBuilder.toString().indexOf(">");
                         if (isRect) offset = offset - 1;
-                        stringBuilder.insert(offset, " (click)=\"pageService.onClick('" + tag + "')\"");
+                        stringBuilder.insert(offset, " (click)=\"pageService.onClick('" + clickTag + "')\"");
                     }
 
                     fileWriter.write(stringBuilder.toString() + "\n");
@@ -101,7 +107,7 @@ public class Main {
         }
         String id = getId(stringBuilder, false);
 
-        idMap.put(id, "Sala " + n.toString());
+        idMap.put(id, n.toString());
     }
 
     private static String getId(StringBuilder stringBuilder, boolean isRect) {

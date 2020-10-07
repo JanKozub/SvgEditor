@@ -19,6 +19,7 @@ public class Main {
             FileWriter fileWriter = new FileWriter(new File("src/result.txt"));
             int i;
             char c;
+            int nullIdx = 0;
             while ((i = fileReader.read()) != -1) {
                 c = (char) i;
                 if (c == '\n') {
@@ -34,8 +35,10 @@ public class Main {
 
                         String tag = idMap.get(id);
                         String clickTag;
-                        if (idMap.get(id) == null) tag = "null";
-                        else
+                        if (idMap.get(id) == null) {
+                            tag = "null" + nullIdx;
+                            nullIdx++;
+                        } else
                             tag = "classroom_" + tag;
                         clickTag = tag;
                         if (!isRect) clickTag = tag + "_text";
